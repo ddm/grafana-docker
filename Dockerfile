@@ -79,7 +79,7 @@ RUN adduser -D -u 1000 grafana &&\
     find /grafana -print | xargs chown -R grafana:grafana
 
 USER grafana
-VOLUME ["/grafana/data", "/grafana/conf"]
+VOLUME "/grafana/data"
 WORKDIR /grafana
 EXPOSE 3000
 
