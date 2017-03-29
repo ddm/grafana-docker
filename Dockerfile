@@ -25,8 +25,6 @@ RUN apk --no-cache add --virtual build-dependencies \
     cp /tmp/http_server.go ${GOPATH}/src/github.com/grafana/grafana/pkg/api/http_server.go &&\
     go run build.go setup &&\
     go run build.go build &&\
-    curl -L https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64 > /usr/sbin/gosu &&\
-    chmod +x /usr/sbin/gosu &&\
     mkdir -p /node &&\
     cd /node &&\
     for key in \
