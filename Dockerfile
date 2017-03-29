@@ -71,6 +71,7 @@ RUN apk --no-cache add --virtual build-dependencies \
     rm -rf /go &&\
     rm -rf /node &&\
     rm -rf /root/.gnupg &&\
+    rm /tmp/http_server.go &&\
     apk del --purge build-dependencies
 
 COPY grafana.ini /grafana/conf/defaults.ini
@@ -78,7 +79,7 @@ RUN adduser -D -u 1000 grafana &&\
     find /grafana -print | xargs chown -R grafana:grafana
 
 USER grafana
-VOLUME ["/grafana/data", "/grafana/config"]
+VOLUME ["/grafana/data", "/grafana/conf"]
 WORKDIR /grafana
 EXPOSE 3000
 
