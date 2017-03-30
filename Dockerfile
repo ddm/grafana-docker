@@ -76,7 +76,7 @@ RUN apk --no-cache add --virtual build-dependencies \
 
 COPY grafana.ini /grafana/conf/defaults.ini
 RUN adduser -D -u 1000 grafana &&\
-    find /grafana -print | xargs chown -R grafana:grafana
+    find /grafana -print | xargs chown grafana:grafana
 
 USER grafana
 VOLUME "/grafana/data"
