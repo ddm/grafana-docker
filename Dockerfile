@@ -6,6 +6,7 @@ ARG YARN_VERSION=0.21.3
 ARG GOPATH=/go
 
 COPY http_server.go /tmp/
+COPY grafana.ini /grafana/conf/defaults.ini
 
 RUN apk --no-cache add --virtual build-dependencies \
       go \
@@ -68,14 +69,12 @@ RUN apk --no-cache add --virtual build-dependencies \
     mkdir -p /grafana/data &&\
     cp ${GOPATH}/src/github.com/grafana/grafana/bin/* /grafana/ &&\
     cp -R ${GOPATH}/src/github.com/grafana/grafana/public_gen/* /grafana/public/ &&\
-    rm -rf /go &&\
+    rm -rf ${GOPATH} &&\
     rm -rf /node &&\
     rm -rf /root/.gnupg &&\
     rm /tmp/http_server.go &&\
-    apk del --purge build-dependencies
-
-COPY grafana.ini /grafana/conf/defaults.ini
-RUN adduser -D -u 1000 grafana &&\
+    apk del --purge build-dependencies &&\
+    adduser -D -u 1000 grafana &&\
     find /grafana -print | xargs chown grafana:grafana
 
 USER grafana
