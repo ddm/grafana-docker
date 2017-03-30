@@ -4,10 +4,10 @@ ARG GRAFANA_VERSION=4.2.0
 ARG NODE_VERSION=7.8.0
 ARG YARN_VERSION=0.21.3
 ARG GOPATH=/go
-ARG NODEPATH=${NODEPATH}
+ARG NODEPATH=/node
 
 COPY http_server.go /tmp/
-COPY grafana.ini /grafana/conf/defaults.ini
+COPY grafana.ini /tmp/
 
 RUN apk --no-cache add --virtual build-dependencies \
       go \
@@ -62,11 +62,13 @@ RUN apk --no-cache add --virtual build-dependencies \
     curl -fSL -o yarn.js.asc "https://yarnpkg.com/downloads/${YARN_VERSION}/yarn-legacy-${YARN_VERSION}.js.asc" &&\
     gpg --batch --verify yarn.js.asc yarn.js &&\
     cd ${GOPATH}/src/github.com/grafana/grafana &&\
-    mv ${NODEPATH}/yarn.js . &&\
+    cp ${NODEPATH}/yarn.js . &&\
     PATH=$PATH:${NODEPATH}/bin node yarn install --pure-lockfile &&\
     PATH=$PATH:${NODEPATH}/bin npm run build &&\
     mkdir -p /grafana/public &&\
     mkdir -p /grafana/data &&\
+    mkdir -p /grafana/conf &&\
+    cp /tmp/grafana.ini /grafana/conf/ &&\
     cp ${GOPATH}/src/github.com/grafana/grafana/bin/grafana-server /grafana/ &&\
     cp -R ${GOPATH}/src/github.com/grafana/grafana/public_gen/* /grafana/public/ &&\
     rm -rf ${GOPATH} &&\
