@@ -68,7 +68,7 @@ RUN apk --no-cache add --virtual build-dependencies \
     mkdir -p /grafana/public &&\
     mkdir -p /grafana/data &&\
     mkdir -p /grafana/conf &&\
-    cp /tmp/grafana.ini /grafana/conf/ &&\
+    cp /tmp/grafana.ini /grafana/conf/defaults.ini &&\
     cp ${GOPATH}/src/github.com/grafana/grafana/bin/grafana-server /grafana/ &&\
     cp -R ${GOPATH}/src/github.com/grafana/grafana/public_gen/* /grafana/public/ &&\
     rm -rf ${GOPATH} &&\
