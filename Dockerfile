@@ -2,10 +2,15 @@ FROM alpine:3.5
 
 ARG GRAFANA_VERSION=4.2.0
 ARG GOPATH=/go
+ARG GRAFANAPATH=/grafana
 
 COPY http_server.go /tmp/
 
-RUN apk --no-cache add --virtual build-dependencies \
+RUN mkdir -p ${GRAFANAPATH}/public &&\
+    mkdir -p ${GRAFANAPATH}/data &&\
+    mkdir -p ${GRAFANAPATH}/conf &&\
+    mkdir -p ${GRAFANAPATH}/bin &&\
+    apk --no-cache add --virtual build-dependencies \
       curl \
       git \
       go \
@@ -15,25 +20,19 @@ RUN apk --no-cache add --virtual build-dependencies \
       build-base &&\
     mkdir -p ${GOPATH}/src/github.com/grafana/ &&\
     git clone --depth 1 --branch v${GRAFANA_VERSION} https://github.com/grafana/grafana.git ${GOPATH}/src/github.com/grafana/grafana &&\
-    cd ${GOPATH}/src/github.com/grafana/grafana &&\
     mv /tmp/http_server.go ${GOPATH}/src/github.com/grafana/grafana/pkg/api/http_server.go &&\
+    cd ${GOPATH}/src/github.com/grafana/grafana &&\
     go run build.go setup &&\
     go run build.go build &&\
-    cd ${GOPATH}/src/github.com/grafana/grafana &&\
+    mv ${GOPATH}/src/github.com/grafana/grafana/bin/grafana-server ${GRAFANAPATH}/bin/grafana-server &&\
     npm install -g yarn &&\
     yarn install --pure-lockfile &&\
     npm run build &&\
+    mv ${GOPATH}/src/github.com/grafana/grafana/public_gen/* /grafana/public/ &&\
     npm uninstall -g yarn &&\
-    mkdir -p /grafana/public &&\
-    mkdir -p /grafana/data &&\
-    mkdir -p /grafana/conf &&\
-    mv ${GOPATH}/src/github.com/grafana/grafana/bin/grafana-server /grafana/bin/grafana-server &&\
-    mv ${GOPATH}/src/github.com/grafana/grafana/public_gen /grafana/public &&\
     rm -rf ${GOPATH} &&\
     rm -rf /root/* &&\
     rm -rf /tmp/* &&\
-    rm -f $(which npm) &&\
-    rm -f $(which node) &&\
     apk del --purge build-dependencies &&\
     rm -rf /var/cache/apk/* &&\
     adduser -D -u 1000 grafana &&\
@@ -46,4 +45,4 @@ VOLUME "/grafana/data"
 WORKDIR /grafana
 EXPOSE 3000
 
-CMD /grafana/bin/grafana-server
+CMD bin/grafana-server
