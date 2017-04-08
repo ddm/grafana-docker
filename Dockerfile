@@ -29,7 +29,7 @@ RUN mkdir -p ${GRAFANAPATH}/public &&\
     yarn install --pure-lockfile &&\
     npm run build &&\
     mv ${GOPATH}/src/github.com/grafana/grafana/public_gen/* /grafana/public/ &&\
-    npm uninstall -g yarn &&\
+    rm -rf /usr/lib/node_modules &&\
     rm -rf ${GOPATH} &&\
     rm -rf /root/* &&\
     rm -rf /tmp/* &&\
