@@ -43,7 +43,7 @@ RUN mkdir -p ${GRAFANAPATH}/public &&\
 COPY grafana.ini /grafana/conf/defaults.ini
 
 USER grafana
-VOLUME "/grafana/data"
+#VOLUME "/grafana/data"
 WORKDIR /grafana
 EXPOSE 3000
 
