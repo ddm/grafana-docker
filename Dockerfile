@@ -10,6 +10,8 @@ RUN mkdir -p ${GRAFANAPATH}/public &&\
     mkdir -p ${GRAFANAPATH}/data &&\
     mkdir -p ${GRAFANAPATH}/conf &&\
     mkdir -p ${GRAFANAPATH}/bin &&\
+    apk --no-cache add --virtual runtime-dependencies \
+      ca-certificates &&\
     apk --no-cache add --virtual build-dependencies \
       curl \
       git \
