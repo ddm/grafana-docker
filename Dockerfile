@@ -17,9 +17,11 @@ RUN mkdir -p ${GRAFANAPATH}/public &&\
       git \
       go \
       nodejs \
+      nodejs-npm \
       python \
       musl-dev \
       build-base &&\
+    npm install npm@latest -g &&\
     mkdir -p ${GOPATH}/src/github.com/grafana/ &&\
     git clone --depth 1 --branch v${GRAFANA_VERSION} https://github.com/grafana/grafana.git ${GOPATH}/src/github.com/grafana/grafana &&\
     mv /tmp/http_server.go ${GOPATH}/src/github.com/grafana/grafana/pkg/api/http_server.go &&\
